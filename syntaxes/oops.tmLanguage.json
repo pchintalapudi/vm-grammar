@@ -31,6 +31,9 @@
 					"include": "#classes"
 				},
 				{
+					"include": "#instanceVariables"
+				},
+				{
 					"include": "#patched"
 				},
 				{
@@ -41,6 +44,9 @@
 				},
 				{
 					"include": "#constants"
+				},
+				{
+					"include": "#statements"
 				}
 			]
 		},
@@ -234,7 +240,7 @@
 										"1": {
 											"patterns": [
 												{
-													"name":"invalid.illegal",
+													"name": "invalid.illegal",
 													"match": "void"
 												},
 												{
@@ -251,12 +257,12 @@
 											]
 										},
 										"3": {
-											"name":"variable.parameter"
+											"name": "variable.parameter"
 										},
 										"4": {
 											"patterns": [
 												{
-													"name":"invalid.illegal",
+													"name": "invalid.illegal",
 													"match": "void"
 												},
 												{
@@ -273,7 +279,94 @@
 											]
 										},
 										"6": {
-											"name":"variable.parameter"
+											"name": "variable.parameter"
+										}
+									}
+								}
+							]
+						},
+						"8": {
+							"patterns": [
+								{
+									"include": "#anyType"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "(private|package|protected|public)\\s+(?:(final)\\s+)?(operator)(?:\\s+(native|intrinsic))?\\s*((?:>>>=)|(?:\\+\\+)|(?:\\?\\.)|(?:\\|\\|)|(?:\\+=)|(?:\\|=)|(?:<<=)|(?:>>=)|(?:>>>)|(?:\\^=)|(?:\\*=)|(?:\\.)|(?:\\+)|(?:&&)|(?:&=)|(?:\\|)|(?:<<)|(?:>>)|(?:\\^)|(?:->)|(?:--)|(?:\\/=)|(?:==)|(?:=>)|(?:>=)|(?:<=)|(?:%=)|(?:\\*)|(?:!=)|(?:::)|(?:-=)|(?:\\?)|(?:&)|(?:~)|(?::)|(?:,)|(?:\\/)|(?:=)|(?:>)|(?:<)|(?:!)|(?:%)|(?:-)|(?:\\(\\))|(?:\\[]))\\s*(?:<(.*)>\\s*)?\\(\\s*(.*?)\\s*\\)\\s*->\\s*(.*?)\\s*(?:;|{)",
+					"captures": {
+						"1": {
+							"name": "storage.modifier"
+						},
+						"2": {
+							"name": "storage.modifier"
+						},
+						"3": {
+							"name": "storage.type.function"
+						},
+						"4": {
+							"name": "storage.modifier"
+						},
+						"5": {
+							"name": "entity.name.function"
+						},
+						"6": {
+							"patterns": [
+								{
+									"include": "#genericDeclaration"
+								}
+							]
+						},
+						"7": {
+							"patterns": [
+								{
+									"match": "(?:(auto|boolean|byte|short|int|float|long|double|void)|(?<re>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*(?:\\?\\s+(?:sub|super)\\s+)?\\g<re>(?:\\s*,\\s*\\g<re>)*\\s*>)?))\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:,\\s*(?:(auto|boolean|byte|short|int|float|long|double|void)|(?<re2>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*(?:\\?\\s+(?:sub|super)\\s+)?\\g<re2>(?:\\s*,\\s*\\g<re2>)*\\s*>)?))\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*)?",
+									"captures": {
+										"1": {
+											"patterns": [
+												{
+													"name": "invalid.illegal",
+													"match": "void"
+												},
+												{
+													"name": "storage.type.primitive.oops",
+													"match": ".*"
+												}
+											]
+										},
+										"2": {
+											"patterns": [
+												{
+													"include": "#classType"
+												}
+											]
+										},
+										"3": {
+											"name": "variable.parameter"
+										},
+										"4": {
+											"patterns": [
+												{
+													"name": "invalid.illegal",
+													"match": "void"
+												},
+												{
+													"name": "storage.type.primitive.oops",
+													"match": ".*"
+												}
+											]
+										},
+										"5": {
+											"patterns": [
+												{
+													"include": "#classType"
+												}
+											]
+										},
+										"6": {
+											"name": "variable.parameter"
 										}
 									}
 								}
@@ -316,7 +409,7 @@
 		"classes": {
 			"patterns": [
 				{
-					"match": "^\\s*(?:(final)\\s+)?(class|interface)\\s+(\\S+)\\s*(?:<\\s*(\\S+)(?:,\\s*(\\S+))*\\s*>)?\\s*(?::\\s*(\\S+))?\\s*(?:::\\s*(\\S+(?:,\\s*\\S+)*))?\\s*{",
+					"match": "(?:(final)?\\s+)?(class|interface|enum)\\s+(.*?)\\s*{",
 					"captures": {
 						"1": {
 							"name": "storage.modifier"
@@ -325,27 +418,11 @@
 							"name": "storage.type.class"
 						},
 						"3": {
-							"name": "entity.name.class"
-						},
-						"4": {
 							"patterns": [
 								{
 									"include": "#genericDeclaration"
 								}
 							]
-						},
-						"5": {
-							"patterns": [
-								{
-									"include": "#genericDeclaration"
-								}
-							]
-						},
-						"6": {
-							"name": "entity.name.class"
-						},
-						"7": {
-							"name": "entity.name.type"
 						}
 					}
 				}
@@ -407,7 +484,7 @@
 							"name": "entity.name.class"
 						},
 						"3": {
-							"name":"variable.language"
+							"name": "variable.language"
 						},
 						"4": {
 							"patterns": [
@@ -417,7 +494,7 @@
 							]
 						},
 						"5": {
-							"name":"variable.language"
+							"name": "variable.language"
 						},
 						"6": {
 							"patterns": [
@@ -429,6 +506,126 @@
 					}
 				}
 			]
+		},
+		"instanceVariables": {
+			"patterns": [
+				{
+					"match": "(private|package|protected|public)\\s+(?:(static)\\s+)?(.*)",
+					"captures": {
+						"1": {
+							"name": "storage.modifier"
+						},
+						"2": {
+							"name": "storage.modifier"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#variableDeclaration"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"statements": {
+			"patterns": [
+				{
+					"include": "#variableDeclaration"
+				},
+				{
+					"match": "(.*);",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"include": "#expression"
+								},
+								{
+									"include": "#root"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"variableDeclaration": {
+			"patterns": [
+				{
+					"match": "((?:auto|boolean|byte|short|int|float|long|double|void)|(?<re>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*(?:\\?\\s+(?:sub|super)\\s+)?\\g<re>(?:\\s*,\\s*\\g<re>)*\\s*>)?))(?:\\[])?\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:=\\s*(.*))?;",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"include": "#anyType"
+								}
+							]
+						},
+						"3": {
+							"name": "variable.name"
+						},
+						"4": {
+							"patterns": [
+								{
+									"include": "#expression"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"expression": {
+			"patterns": [
+				{
+					"include": "#newExpression"
+				},
+				{
+					"include": "#arithmeticExpression"
+				}
+			]
+		},
+		"newExpression": {
+			"match": "(new)\\s+(.*?)\\(",
+			"captures": {
+				"1": {
+					"name": "keyword.operator.new"
+				},
+				"2": {
+					"patterns": [
+						{
+							"include": "#classType"
+						}
+					]
+				}
+			}
+		},
+		"arithmeticExpression": {
+			"match": "(?:(\\d\\S*)|([a-zA-Z_][a-zA-Z0-9_]*))\\s*(?:[+\\-\\/*%<>|&\\^=]+\\s*(?:(\\d\\S*)|([a-zA-Z_][a-zA-Z0-9_]*))\\s*)+",
+			"captures": {
+				"1": {
+					"patterns": [
+						{
+							"include": "#constants"
+						}
+					]
+				},
+				"2": {
+					"name":"variable.name"
+				},
+				"3": {
+					"patterns": [
+						{
+							"include": "#constants"
+						}
+					]
+				},
+				"4": {
+					"name":"variable.name"
+				}
+			}
 		}
 	},
 	"scopeName": "source.oops"
