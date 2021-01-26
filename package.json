@@ -1,0 +1,25 @@
+{
+    "name": "oops-grammar",
+    "displayName": "oops-grammar",
+    "description": "",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.52.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "oops",
+            "aliases": ["oops", "oops"],
+            "extensions": [".oops"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "oops",
+            "scopeName": "source.oops",
+            "path": "./syntaxes/oops.tmLanguage.json"
+        }]
+    }
+}

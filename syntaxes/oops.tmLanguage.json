@@ -1,0 +1,435 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "oops",
+	"patterns": [
+		{
+			"include": "#root"
+		}
+	],
+	"repository": {
+		"root": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#brackets"
+				},
+				{
+					"include": "#chars"
+				},
+				{
+					"include": "#strings"
+				},
+				{
+					"include": "#functions"
+				},
+				{
+					"include": "#imports"
+				},
+				{
+					"include": "#classes"
+				},
+				{
+					"include": "#patched"
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#storages"
+				},
+				{
+					"include": "#constants"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.oops",
+					"match": "\\b(break|case|catch|continue|default|do|else|finally|for|goto|if|new|return|switch|throw|try|using|while)\\b"
+				},
+				{
+					"name": "keyword.control.import.oops",
+					"match": "\\b(import)\\b"
+				},
+				{
+					"name": "keyword.operator.oops",
+					"match": "(?:>>>=)|(?:\\+\\+)|(?:\\?\\.)|(?:\\|\\|)|(?:\\+=)|(?:\\|=)|(?:<<=)|(?:>>=)|(?:>>>)|(?:\\^=)|(?:\\*=)|(?:\\.)|(?:\\+)|(?:&&)|(?:&=)|(?:\\|)|(?:<<)|(?:>>)|(?:\\^)|(?:->)|(?:--)|(?:\\/=)|(?:==)|(?:=>)|(?:>=)|(?:<=)|(?:%=)|(?:\\*)|(?:!=)|(?:::)|(?:-=)|(?:\\?)|(?:&)|(?:~)|(?::)|(?:,)|(?:\\/)|(?:=)|(?:>)|(?:<)|(?:!)|(?:%)|(?:-)"
+				}
+			]
+		},
+		"storages": {
+			"patterns": [
+				{
+					"name": "storage.type.class.oops",
+					"match": "\\b(class|enum|interface)\\b"
+				},
+				{
+					"name": "storage.type.function.oops",
+					"match": "\\b(def|get|set|operator)\\b"
+				},
+				{
+					"name": "storage.type.method.oops",
+					"match": "\\b(def|get|set|operator)\\b"
+				},
+				{
+					"name": "storage.type.primitive.oops",
+					"match": "\\b(auto|boolean|byte|short|int|float|long|double|void)\\b"
+				},
+				{
+					"name": "storage.modifier.access.oops",
+					"match": "\\b(intrinsic|native|package|private|protected|public)\\b"
+				},
+				{
+					"name": "storage.modifier.variable.oops",
+					"match": "\\b(final|static)\\b"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.oops",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.oops",
+					"match": "\\\\."
+				}
+			]
+		},
+		"chars": {
+			"name": "string.quoted.single.oops",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.oops",
+					"match": "\\\\."
+				}
+			]
+		},
+		"patched": {
+			"patterns": [
+				{
+					"name": "variable.language.this",
+					"match": "\\bthis\\b"
+				},
+				{
+					"name": "variable.language.super",
+					"match": "\\bsuper\\b"
+				},
+				{
+					"name": "variable.language.sub",
+					"match": "\\bsub\\b"
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.language.true.oops",
+					"match": "\\b(true)\\b"
+				},
+				{
+					"name": "constant.language.false.oops",
+					"match": "\\b(false)\\b"
+				},
+				{
+					"name": "constant.language.null.oops",
+					"match": "\\b(null)\\b"
+				},
+				{
+					"name": "constant.numeric.integer.decimal.oops",
+					"match": "\\b(0)\\b"
+				},
+				{
+					"name": "constant.numeric.integer.decimal.oops",
+					"match": "\\b([\\-+]?[1-9]\\d*(?:i?))\\b"
+				},
+				{
+					"name": "constant.numeric.integer.binary.oops",
+					"match": "\\b([\\-+]?0b[01]+(?:i?))\\b"
+				},
+				{
+					"name": "constant.numeric.integer.hexadecimal.oops",
+					"match": "\\b([\\-+]?0x[0-9a-fA-F]+(?:i?))\\b"
+				},
+				{
+					"name": "constant.numeric.float.oops",
+					"match": "\\b([\\-+]?\\d+[eE][\\-+]?\\d+[dDfF]?)\\b"
+				},
+				{
+					"name": "constant.numeric.float.oops",
+					"match": "\\b([\\-+]?\\d+\\.\\d+[dDfF]?)\\b"
+				},
+				{
+					"name": "constant.numeric.float.oops",
+					"match": "\\b([\\-+]?\\d+\\.\\d+[eE][\\-+]?\\d+[dDfF]?)\\b"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash",
+					"match": "\\/\\/.*$"
+				},
+				{
+					"name": "comment.block",
+					"begin": "\\/\\*",
+					"end": "\\*\\/"
+				}
+			]
+		},
+		"brackets": {
+			"patterns": [
+				{
+					"name": "punctuation.section.block.curly",
+					"match": "{|}"
+				},
+				{
+					"name": "punctuation.section.block.round",
+					"match": "\\(|\\)"
+				},
+				{
+					"name": "punctuation.section.block.square",
+					"match": "\\[|]"
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"match": "(private|package|protected|public)\\s+(?:(static|final)\\s+)?(def)\\s+(?:(native|intrinsic)\\s+)?([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:<(.*)>\\s*)?\\(\\s*(.*?)\\s*\\)\\s*->\\s*(.*?)\\s*(?:;|{)",
+					"captures": {
+						"1": {
+							"name": "storage.modifier"
+						},
+						"2": {
+							"name": "storage.modifier"
+						},
+						"3": {
+							"name": "storage.type.function"
+						},
+						"4": {
+							"name": "storage.modifier"
+						},
+						"5": {
+							"name": "entity.name.function"
+						},
+						"6": {
+							"patterns": [
+								{
+									"include": "#genericDeclaration"
+								}
+							]
+						},
+						"7": {
+							"patterns": [
+								{
+									"match": "(?:(auto|boolean|byte|short|int|float|long|double|void)|(?<re>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*(?:\\?\\s+(?:sub|super)\\s+)?\\g<re>(?:\\s*,\\s*\\g<re>)*\\s*>)?))\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:,\\s*(?:(auto|boolean|byte|short|int|float|long|double|void)|(?<re2>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*(?:\\?\\s+(?:sub|super)\\s+)?\\g<re2>(?:\\s*,\\s*\\g<re2>)*\\s*>)?))\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*)?",
+									"captures": {
+										"1": {
+											"patterns": [
+												{
+													"name":"invalid.illegal",
+													"match": "void"
+												},
+												{
+													"name": "storage.type.primitive.oops",
+													"match": ".*"
+												}
+											]
+										},
+										"2": {
+											"patterns": [
+												{
+													"include": "#classType"
+												}
+											]
+										},
+										"3": {
+											"name":"variable.parameter"
+										},
+										"4": {
+											"patterns": [
+												{
+													"name":"invalid.illegal",
+													"match": "void"
+												},
+												{
+													"name": "storage.type.primitive.oops",
+													"match": ".*"
+												}
+											]
+										},
+										"5": {
+											"patterns": [
+												{
+													"include": "#classType"
+												}
+											]
+										},
+										"6": {
+											"name":"variable.parameter"
+										}
+									}
+								}
+							]
+						},
+						"8": {
+							"patterns": [
+								{
+									"include": "#anyType"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\(",
+					"captures": {
+						"1": {
+							"name": "entity.name.function"
+						}
+					}
+				}
+			]
+		},
+		"imports": {
+			"patterns": [
+				{
+					"match": "^\\s*(import)\\s+(.*\\b)?(\\S+)\\s*;",
+					"captures": {
+						"1": {
+							"name": "keyword.control.import"
+						},
+						"3": {
+							"name": "entity.name.type"
+						}
+					}
+				}
+			]
+		},
+		"classes": {
+			"patterns": [
+				{
+					"match": "^\\s*(?:(final)\\s+)?(class|interface)\\s+(\\S+)\\s*(?:<\\s*(\\S+)(?:,\\s*(\\S+))*\\s*>)?\\s*(?::\\s*(\\S+))?\\s*(?:::\\s*(\\S+(?:,\\s*\\S+)*))?\\s*{",
+					"captures": {
+						"1": {
+							"name": "storage.modifier"
+						},
+						"2": {
+							"name": "storage.type.class"
+						},
+						"3": {
+							"name": "entity.name.class"
+						},
+						"4": {
+							"patterns": [
+								{
+									"include": "#genericDeclaration"
+								}
+							]
+						},
+						"5": {
+							"patterns": [
+								{
+									"include": "#genericDeclaration"
+								}
+							]
+						},
+						"6": {
+							"name": "entity.name.class"
+						},
+						"7": {
+							"name": "entity.name.type"
+						}
+					}
+				}
+			]
+		},
+		"anyType": {
+			"patterns": [
+				{
+					"name": "storage.type.primitive.oops",
+					"match": "\\b(auto|boolean|byte|short|int|float|long|double|void)\\b"
+				},
+				{
+					"include": "#reifiedType"
+				}
+			]
+		},
+		"classType": {
+			"patterns": [
+				{
+					"name": "invalid.illegal",
+					"match": "\\b(auto|boolean|byte|short|int|float|long|double|void)\\b"
+				},
+				{
+					"include": "#reifiedType"
+				}
+			]
+		},
+		"genericDeclaration": {
+			"patterns": [
+				{
+					"match": "(?:([a-zA-Z_][a-zA-Z0-9_]*)|\\?)\\s+(sub|super)\\s+(?<re>[a-zA-Z_][a-zA-Z0-9_]*\\s*(?:<\\s*\\g<re>(?:\\s*,\\s*\\g<re>)*\\s*>)?)|([a-zA-Z_][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "entity.name.type"
+						},
+						"2": {
+							"name": "variable.language"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#classType"
+								}
+							]
+						},
+						"4": {
+							"name": "entity.name.type"
+						}
+					}
+				}
+			]
+		},
+		"reifiedType": {
+			"patterns": [
+				{
+					"match": "(?<re>([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:\\\\<\\s*(?:\\?\\s+(sub|super)\\s+)?(\\g<re>)(?:\\s*,\\s*(?:\\?\\s+(sub|super)\\s+)?(\\g<re>))*\\s*\\\\>)?)",
+					"captures": {
+						"2": {
+							"name": "entity.name.class"
+						},
+						"3": {
+							"name":"variable.language"
+						},
+						"4": {
+							"patterns": [
+								{
+									"include": "#anyType"
+								}
+							]
+						},
+						"5": {
+							"name":"variable.language"
+						},
+						"6": {
+							"patterns": [
+								{
+									"include": "#anyType"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"scopeName": "source.oops"
+}
