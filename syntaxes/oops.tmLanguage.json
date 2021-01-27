@@ -17,6 +17,16 @@
 				},
 				{
 					"include": "#classes"
+				}
+			]
+		},
+		"instructions": {
+			"patterns": [
+				{
+					"include": "#strings"
+				},
+				{
+					"include": "#chars"
 				},
 				{
 					"include": "#patched"
@@ -100,15 +110,15 @@
 		"patched": {
 			"patterns": [
 				{
-					"name": "variable.language.this",
+					"name": "variable.language.this.oops",
 					"match": "\\bthis\\b"
 				},
 				{
-					"name": "variable.language.super",
+					"name": "variable.language.super.oops",
 					"match": "\\bsuper\\b"
 				},
 				{
-					"name": "variable.language.sub",
+					"name": "variable.language.sub.oops",
 					"match": "\\bsub\\b"
 				}
 			]
@@ -160,11 +170,11 @@
 		"comments": {
 			"patterns": [
 				{
-					"name": "comment.line.double-slash",
+					"name": "comment.line.double-slash.oops",
 					"match": "\\/\\/.*$"
 				},
 				{
-					"name": "comment.block",
+					"name": "comment.block.oops",
 					"begin": "\\/\\*",
 					"end": "\\*\\/"
 				}
@@ -174,7 +184,7 @@
 			"patterns": [
 				{
 					"name": "storage.type.primitive.oops",
-					"match": "\\b(boolean|byte|short|int|float|long|double)\\b"
+					"match": "\\b(boolean|byte|short|int|float|long|double)(?:\\s*\\[])?\\b"
 				}
 			]
 		},
@@ -185,38 +195,38 @@
 				},
 				{
 					"match": "(void|auto)",
-					"name": "invalid.illegal"
+					"name": "invalid.illegal.oops"
 				},
 				{
 					"include": "#reifiedType"
 				},
 				{
-					"match": "([a-zA-Z_][a-zA-Z0-9_]*)",
-					"name": "entity.name.class"
+					"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[])?",
+					"name": "entity.name.class.oops"
 				}
 			]
 		},
 		"classType": {
 			"patterns": [
 				{
-					"match": "(void|auto|boolean|byte|short|int|float|long|double)",
-					"name": "invalid.illegal"
+					"match": "^(void|auto|boolean|byte|short|int|float|long|double)$",
+					"name": "invalid.illegal.oops"
 				},
 				{
 					"include": "reifiedType"
 				},
 				{
-					"match": "([a-zA-Z_][a-zA-Z0-9_]*)",
-					"name": "entity.name.class"
+					"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[])?",
+					"name": "entity.name.class.oops"
 				}
 			]
 		},
 		"reifiedType": {
 			"begin": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*<",
-			"end": ">",
+			"end": ">(?:\\s*\\[])?",
 			"beginCaptures": {
 				"1": {
-					"name": "entity.name.class"
+					"name": "entity.name.class.oops"
 				}
 			},
 			"patterns": [
@@ -225,7 +235,56 @@
 				}
 			]
 		},
-		"typeDecl": {},
+		"typeDecl": {
+			"patterns": [
+				{
+					"begin": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(sub|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*<",
+					"end": ">",
+					"patterns": [
+						{
+							"include": "#validType"
+						}
+					],
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type.oops"
+						},
+						"2": {
+							"name": "storage.modifier.bound.oops"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#classType"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(sub|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "entity.name.type.oops"
+						},
+						"2": {
+							"name": "storage.modifier.bound.oops"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#classType"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "[a-zA-Z_][a-zA-Z0-9_]*",
+					"name": "entity.name.type.oops"
+				}
+			]
+		},
 		"imports": {
 			"match": "(import)\\s+([a-zA-Z_][a-zA-Z0-9_]*\\.)*([a-zA-Z_][a-zA-Z0-9_]*)",
 			"captures": {
@@ -233,28 +292,80 @@
 					"name": "keyword.control.import.oops"
 				},
 				"3": {
-					"name": "entity.name.class"
+					"name": "entity.name.class.oops"
 				}
 			}
 		},
 		"classes": {
-			"begin": "(?:(final)\\s+)?(class|interface)\\s+(.*?)\\s*(?::\\s*(.*?)\\s*)?(?:::\\s*(.*?)\\s*)?{",
-			"end": "}",
-			"name": "meta.class.oops",
 			"patterns": [
 				{
-					"include": "#methods"
-				},
-				{
-					"include": "#classVariables"
-				},
-				{
-					"include": "#classes"
+					"begin": "(?:(final)\\s+)?(class|interface)\\s+",
+					"end": "}",
+					"name": "meta.class.oops",
+					"patterns": [
+						{
+							"begin": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*<",
+							"end": ">",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.class.oops"
+								}
+							},
+							"patterns": [
+								{
+									"include": "#typeDecl"
+								}
+							]
+						},
+						{
+							"begin": ":\\s*",
+							"end": "(?=::|{)",
+							"patterns": [
+								{
+									"include": "#classType",
+									"name": "entity.other.inherited-class.oops"
+								}
+							]
+						},
+						{
+							"begin": "::\\s*",
+							"end": "(?={)",
+							"patterns": [
+								{
+									"include": "#classType",
+									"name": "entity.other.inherited-class.oops"
+								}
+							]
+						},
+						{
+							"begin": "{",
+							"end": "(?=})",
+							"patterns": [
+								{
+									"include": "#methods"
+								},
+								{
+									"include": "#classVariables"
+								},
+								{
+									"include": "#classes"
+								}
+							]
+						}
+					],
+					"beginCaptures": {
+						"1": {
+							"name": "storage.modifier.lookup.oops"
+						},
+						"2": {
+							"name": "storage.type.class.oops"
+						}
+					}
 				}
 			]
 		},
 		"classVariables": {
-			"begin": "(private|package|protected|public)\\s+(?:(static)\\s+)?",
+			"begin": "(private|package|protected|public)\\s+(?:(static)\\s+)?(?:(final)\\s+)?",
 			"end": ";",
 			"beginCaptures": {
 				"1": {
@@ -262,6 +373,9 @@
 				},
 				"2": {
 					"name": "storage.modifier.lookup.oops"
+				},
+				"3": {
+					"name": "storage.modifier.modifiable.oops"
 				}
 			},
 			"patterns": [
@@ -272,7 +386,7 @@
 						"1": {
 							"patterns": [
 								{
-									"match": "(?:([a-zA-Z_].*>)\\s*|([a-zA-Z_][a-zA-Z0-9_]*)\\s+)([a-zA-Z_][a-zA-Z0-9_]*)",
+									"match": "(?:([a-zA-Z_].*>)(?:\\s*\\[])\\s*|([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[]|\\s)\\s*)([a-zA-Z_][a-zA-Z0-9_]*)",
 									"captures": {
 										"1": {
 											"patterns": [
@@ -289,7 +403,7 @@
 											]
 										},
 										"3": {
-											"name": "variable.name"
+											"name": "variable.name.oops"
 										}
 									}
 								}
@@ -298,7 +412,7 @@
 					}
 				},
 				{
-					"match": "(?:([a-zA-Z_].*>)\\s*|([a-zA-Z_][a-zA-Z0-9_]*)\\s+)([a-zA-Z_][a-zA-Z0-9_]*)",
+					"match": "(?:([a-zA-Z_].*>)(?:\\s*\\[])\\s*|([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[]|\\s)\\s*)([a-zA-Z_][a-zA-Z0-9_]*)",
 					"captures": {
 						"1": {
 							"patterns": [
@@ -315,7 +429,7 @@
 							]
 						},
 						"3": {
-							"name": "variable.name"
+							"name": "variable.name.oops"
 						}
 					}
 				}
@@ -347,7 +461,7 @@
 							"name": "storage.modifier.lookup.oops"
 						},
 						"3": {
-							"name": "storage.type.function"
+							"name": "storage.type.function.oops"
 						},
 						"4": {
 							"patterns": [
@@ -361,13 +475,13 @@
 									],
 									"beginCaptures": {
 										"1": {
-											"name": "entity.name.function"
+											"name": "entity.name.function.oops"
 										}
 									}
 								},
 								{
 									"match": "([a-zA-Z_][a-zA-Z0-9_]*)",
-									"name": "entity.name.function"
+									"name": "entity.name.function.oops"
 								}
 							]
 						}
@@ -391,7 +505,7 @@
 					},
 					"endCaptures": {
 						"1": {
-							"name": "variable.parameter"
+							"name": "variable.parameter.oops"
 						}
 					},
 					"patterns": [
@@ -411,7 +525,7 @@
 							]
 						},
 						"2": {
-							"name": "variable.parameter"
+							"name": "variable.parameter.oops"
 						}
 					}
 				}
@@ -427,14 +541,21 @@
 							"patterns": [
 								{
 									"match": "(?<=\\b)void(?=\\b)",
-									"name": "storage.type.primitive"
+									"name": "storage.type.primitive.oops"
 								},
 								{
 									"include": "#validType"
 								}
 							]
 						}
-					}
+					},
+					"name":"argEnd",
+					"patterns": [
+						{
+							"match": "(.*+)",
+							"name":"meta.function.body.oops"
+						}
+					]
 				},
 				{
 					"match": "\\)\\s*->\\s*(.*?)\\s*(?=;)",
@@ -443,7 +564,7 @@
 							"patterns": [
 								{
 									"match": "(?<=\\b)void(?=\\b)",
-									"name": "storage.type.primitive"
+									"name": "storage.type.primitive.oops"
 								},
 								{
 									"include": "#validType"
