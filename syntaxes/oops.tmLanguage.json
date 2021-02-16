@@ -90,10 +90,6 @@
 				{
 					"name": "variable.language.super.oops",
 					"match": "\\bsuper\\b"
-				},
-				{
-					"name": "variable.language.sub.oops",
-					"match": "\\bsub\\b"
 				}
 			]
 		},
@@ -183,11 +179,11 @@
 		"classType": {
 			"patterns": [
 				{
-					"match": "^(void|auto|boolean|byte|short|int|float|long|double)$",
+					"match": "(void|auto|boolean|byte|short|int|float|long|double)",
 					"name": "invalid.illegal.oops"
 				},
 				{
-					"include": "reifiedType"
+					"include": "#reifiedType"
 				},
 				{
 					"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[])?",
@@ -213,7 +209,7 @@
 		"typeDecl": {
 			"patterns": [
 				{
-					"begin": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(sub|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*<",
+					"begin": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(extends|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*<",
 					"end": ">",
 					"name": "meta.type.bound.generic.oops",
 					"patterns": [
@@ -238,7 +234,7 @@
 					}
 				},
 				{
-					"match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(sub|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+					"match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(extends|super)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
 					"name": "meta.type.bound.nongeneric.oops",
 					"captures": {
 						"1": {
@@ -297,18 +293,23 @@
 							]
 						},
 						{
-							"begin": ":\\s*",
-							"end": "(?=::|{)",
+							"begin": "(extends)\\s*",
+							"end": "\\s*(?=implements|{)",
 							"name": "meta.class.super.name.oops",
 							"patterns": [
 								{
 									"include": "#classType",
 									"name": "entity.other.inherited-class.oops"
 								}
-							]
+							],
+							"beginCaptures": {
+								"1": {
+									"name": "keyword.control.extends.oops"
+								}
+							}
 						},
 						{
-							"begin": "::\\s*",
+							"begin": "(implements)\\s*",
 							"end": "(?={)",
 							"name": "meta.interface.super.name.oops",
 							"patterns": [
@@ -316,12 +317,17 @@
 									"include": "#classType",
 									"name": "entity.other.inherited-class.oops"
 								}
-							]
+							],
+							"beginCaptures": {
+								"1": {
+									"name": "keyword.control.implements.oops"
+								}
+							}
 						},
 						{
 							"begin": "{",
 							"end": "(?=})",
-							"name":"meta.class.oops.body",
+							"name": "meta.class.oops.body",
 							"patterns": [
 								{
 									"include": "#classes"
@@ -374,7 +380,7 @@
 				{
 					"begin": "(.*?)\\s*=",
 					"end": "(?=;)",
-					"name":"meta.class.variable.oops",
+					"name": "meta.class.variable.oops",
 					"beginCaptures": {
 						"1": {
 							"patterns": [
@@ -411,7 +417,7 @@
 				},
 				{
 					"match": "(?:([a-zA-Z_].*>)(?:\\s*\\[])?\\s*|([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*\\[]|\\s)\\s*)([a-zA-Z_][a-zA-Z0-9_]*)",
-					"name":"meta.class.variable.oops",
+					"name": "meta.class.variable.oops",
 					"captures": {
 						"1": {
 							"patterns": [
@@ -670,7 +676,7 @@
 					]
 				},
 				{
-					"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*,|\\s*\\))",
+					"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
 					"name": "meta.argdecl.nontemplated.oops",
 					"captures": {
 						"1": {
@@ -684,6 +690,25 @@
 							"name": "variable.parameter.oops"
 						}
 					}
+				},
+				{
+					"begin": "=",
+					"end": "(?=,|\\))",
+					"name": "meta.parameter.variable.default",
+					"patterns": [
+						{
+							"include": "#parenthesized"
+						},
+						{
+							"include": "#brackets"
+						},
+						{
+							"include": "#basicBlock"
+						},
+						{
+							"include": "#expressions"
+						}
+					]
 				}
 			]
 		},
@@ -703,6 +728,12 @@
 				},
 				{
 					"include": "#brackets"
+				},
+				{
+					"include": "#declarations"
+				},
+				{
+					"include": "#forloop"
 				},
 				{
 					"include": "#expressions"
@@ -815,7 +846,7 @@
 		},
 		"castExpression": {
 			"match": "->\\s*(.*?)\\s*(?=;|\\)|])",
-			"name":"meta.cast.oops",
+			"name": "meta.cast.oops",
 			"captures": {
 				"1": {
 					"patterns": [
@@ -828,7 +859,7 @@
 		},
 		"instanceofExpression": {
 			"match": "(instanceof)\\s*(.*?)\\s*(?=;|\\)|])",
-			"name":"meta.cast.oops",
+			"name": "meta.cast.oops",
 			"captures": {
 				"1": {
 					"name": "keyword.control.instanceof.oops"
@@ -842,7 +873,111 @@
 				}
 			}
 		},
+		"forloop": {
+			"begin": "(for)\\s*\\(",
+			"end": "\\)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.for.oops"
+				}
+			},
+			"name": "meta.forloop.header",
+			"patterns": [
+				{
+					"match": "(?<=\\()\\s*(.*):\\s*(.*)(?=\\))",
+					"name": "meta.forloop.enhanced.header",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"name": "meta.forloop.enhanced.basic",
+									"match": "([a-zA-Z_][a-zA-Z0-9_]*)(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*",
+									"captures": {
+										"1": {
+											"patterns": [
+												{
+													"include": "#validType"
+												}
+											]
+										},
+										"2": {
+											"name": "variable.name"
+										}
+									}
+								},
+								{
+									"name": "meta.forloop.enhanced.generic",
+									"begin": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)<",
+									"end": ">(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*",
+									"patterns": [
+										{
+											"include": "#validType"
+										}
+									],
+									"beginCaptures": {
+										"1": {
+											"patterns": [
+												{
+													"include": "#classType"
+												}
+											]
+										}
+									},
+									"endCaptures": {
+										"1": {
+											"name": "variable.name"
+										}
+									}
+								}
+							]
+						},
+						"2": {
+							"name": "meta.forloop.enhanced.iterable",
+							"patterns": [
+								{
+									"include": "#expressions"
+								}
+							]
+						}
+					}
+				},
+				{
+					"begin": "(?<=\\()",
+					"end": "(?=;)",
+					"name": "meta.forloop.declaration",
+					"patterns": [
+						{
+							"include": "#declarations"
+						},
+						{
+							"include": "#expressions"
+						}
+					]
+				},
+				{
+					"begin": ";",
+					"end": ";",
+					"name": "meta.forloop.conditional",
+					"patterns": [
+						{
+							"include": "#expressions"
+						}
+					]
+				},
+				{
+					"begin": "(?<=;)",
+					"end": "(?=\\))",
+					"name": "meta.forloop.increment",
+					"patterns": [
+						{
+							"include": "#expressions"
+						}
+					]
+				}
+			]
+		},
 		"expressions": {
+			"name": "meta.expression.oops",
 			"patterns": [
 				{
 					"include": "#strings"
@@ -871,6 +1006,48 @@
 				{
 					"match": "((?:>>>=)|(?:\\+\\+)|(?:\\?\\.)|(?:\\|\\|)|(?:\\+=)|(?:\\|=)|(?:<<=)|(?:>>=)|(?:>>>)|(?:\\^=)|(?:\\*=)|(?:\\.)|(?:\\+)|(?:&&)|(?:&=)|(?:\\|)|(?:<<)|(?:>>)|(?:\\^)|(?:->)|(?:--)|(?:\\/=)|(?:==)|(?:=>)|(?:>=)|(?:<=)|(?:%=)|(?:\\*)|(?:!=)|(?:::)|(?:-=)|(?:\\?)|(?:&)|(?:~)|(?::)|(?:,)|(?:\\/)|(?:=)|(?:>)|(?:<)|(?:!)|(?:%)|(?:-))",
 					"name": "keyword.operator.oops"
+				}
+			]
+		},
+		"declarations": {
+			"patterns": [
+				{
+					"match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?==)",
+					"captures": {
+						"1": {
+							"patterns": [
+								{
+									"include": "#validType"
+								}
+							]
+						},
+						"2": {
+							"name": "variable.name"
+						}
+					}
+				},
+				{
+					"begin": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)<",
+					"end": ">(?:\\[]|\\s)\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?==)",
+					"patterns": [
+						{
+							"include": "#validType"
+						}
+					],
+					"beginCaptures": {
+						"1": {
+							"patterns": [
+								{
+									"include": "#classType"
+								}
+							]
+						}
+					},
+					"endCaptures": {
+						"1": {
+							"name": "variable.name"
+						}
+					}
 				}
 			]
 		}
